@@ -1,0 +1,13 @@
+[Unit]
+Description=A dogsitter in Python
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/shush/bin/python run.py
+User=pi
+WorkingDirectory=/home/pi/shush
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

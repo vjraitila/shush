@@ -6,8 +6,9 @@ import numpy as np
 import logging as log
 import os
 import random
+import time
 
-THRESHOLD = 0.2
+THRESHOLD = 0.1
 CHUNK_SIZE = 1024
 RATE = 16000
 
@@ -33,7 +34,6 @@ def is_silent(lvl):
 
 def shush():
     """Play a random sound from recordings."""
-    # print('SHUSH')
     sounds = os.listdir('sounds')
     if len(sounds) > 0:
         rnd_sound = 'sounds/' + random.choice(sounds)
@@ -49,23 +49,25 @@ def start_listening():
     log.info('Started listening...')
 
     heard_something = False
-    last_noise = 0.0
+    noise_started = 0
 
     while True:
         snd_data = sd.rec(CHUNK_SIZE, samplerate=RATE, channels=1, blocking=True)
         rms = np.sqrt(np.mean(snd_data**2))
 
-        show_indicator(rms)
+        # show_indicator(rms)
 
-        if not is_silent(rms):
+        if not heard_something and not is_silent(rms):
             heard_something = True
-            last_noise = rms
+            noise_started = time.time()
+            log.info('Noise started (rms: {}, threshold: {})'.format(rms, THRESHOLD))
 
         if heard_something and is_silent(rms):
-            log.info('Heard a sound {}/{}'.format(last_noise, THRESHOLD))
+            log.info('Noise stopped (duration: {}s)'.format(time.time() - noise_started))
+            # print('shush()')
             shush()
             heard_something = False
 
 if __name__ == '__main__':
-    log.basicConfig(filename='events.log', level=log.INFO, format='%(asctime)s %(message)s')
+    log.basicConfig(filename='shush_events.log', level=log.INFO, format='%(asctime)s %(message)s')
     start_listening()
