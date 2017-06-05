@@ -1,6 +1,6 @@
 [Unit]
 Description=A dogsitter in Python
-After=multi-user.target
+After=multi-user.target ntp.service
 
 [Service]
 Type=simple
