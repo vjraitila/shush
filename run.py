@@ -17,6 +17,8 @@ def is_silent(lvl):
     return lvl < THRESHOLD
 
 def play_sound(filename):
+    """Play a sound using the default sound device."""
+    log.info('Playing %s', filename)
     data, samplerate = sf.read(filename, dtype='float32')
     sd.play(data, samplerate)
     sd.wait()
@@ -26,7 +28,6 @@ def shush():
     sounds = os.listdir('sounds')
     if sounds:
         rnd_sound = 'sounds/' + random.choice(sounds)
-        log.info('Playing %s', rnd_sound)
         play_sound(rnd_sound)
     else:
         log.warn('Sounds directory is empty - nothing to play')
@@ -60,6 +61,6 @@ if __name__ == '__main__':
             # print('shush()')
             shush()
             noise_started = 0
-    
+
     log.info('Stopped listening')
 
