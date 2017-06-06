@@ -11,4 +11,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 *.log
-sounds
+sounds/shush*.wav

@@ -19,15 +19,15 @@ def is_silent(lvl):
 def play_sound(filename):
     """Play a sound using the default sound device."""
     log.info('Playing %s', filename)
-    data, samplerate = sf.read(filename, dtype='float32')
+    data, samplerate = sf.read('sounds/' + filename, dtype='float32')
     sd.play(data, samplerate)
     sd.wait()
 
 def shush():
     """Play a random sound from recordings."""
-    sounds = os.listdir('sounds')
+    sounds = filter(lambda f: f.startswith('shush'), os.listdir('sounds'))
     if sounds:
-        rnd_sound = 'sounds/' + random.choice(sounds)
+        rnd_sound = random.choice(sounds)
         play_sound(rnd_sound)
     else:
         log.warn('Sounds directory is empty - nothing to play')
@@ -42,7 +42,7 @@ signal.signal(signal.SIGINT, handler_stop_signals)
 signal.signal(signal.SIGTERM, handler_stop_signals)
 
 if __name__ == '__main__':
-    log.basicConfig(filename='shush_events.log', level=log.INFO, format='%(asctime)s %(message)s')
+    log.basicConfig(filename='history.log', level=log.INFO, format='%(asctime)s %(message)s')
     log.info('Started listening')
     play_sound('welcome.wav')
 
@@ -62,5 +62,6 @@ if __name__ == '__main__':
             shush()
             noise_started = 0
 
+    play_sound('goodbye.wav')
     log.info('Stopped listening')
 
